@@ -37,7 +37,7 @@ RUN apt-get update -y && \
 ########################################
 #### ------- OpenJDK Installation ------
 ########################################
-RUN apt-get install -y locales && rm -rf /var/lib/apt/lists/* && \
+RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
 ENV LANG en_US.utf8
@@ -52,7 +52,7 @@ ENV LANG en_US.utf8
 #     For some sample build times, see Debian's buildd logs:
 #       https://buildd.debian.org/status/logs.php?pkg=openjdk-8
 
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
 		bzip2 \
 		unzip \
 		xz-utils \
@@ -157,7 +157,9 @@ RUN mkdir -p ${GRADLE_INSTALL_BASE} && \
 # Ref: https://github.com/nodesource/distributions
 ARG NODE_VERSION=${NODE_VERSION:-11}
 ENV NODE_VERSION=${NODE_VERSION}
-RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
+RUN apt-get update -y && \
+    apt-get install -y sudo curl git xz-utils && \
+    curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
     apt-get install -y nodejs
     
 RUN cd ${SCRIPT_DIR}; ${SCRIPT_DIR}/setup_npm_proxy.sh
@@ -228,7 +230,9 @@ ENV DISPLAY=${DISPLAY}
 USER root
 
 ## ---- X11 ----
-RUN apt-get install -y sudo xauth xorg fluxbox && \
+RUN apt-get update && \
+    # apt-get install -y sudo xauth xorg openbox && \
+    apt-get install -y sudo xauth xorg fluxbox && \
     # apt-get install -y libxext-dev libxrender-dev libxtst-dev firefox-esr && \
     apt-get install -y libxext-dev libxrender-dev libxtst-dev firefox && \
     apt-get install -y apt-transport-https ca-certificates libcurl3-gnutls
@@ -264,7 +268,8 @@ ADD ./config/Desktop $HOME/
 ##  ---- dbus setup ----
 ENV DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket
 ENV unix:runtime=yes
-RUN sudo rm -f /var/run/firefox-restart-required && \
+RUN apt-get update -y && \
+    sudo rm -f /var/run/firefox-restart-required && \
     #sudo mkdir -p /var/run/dbus/system_bus_socket && chmod -R 0777 /var/run/dbus/system_bus_socket && \
     sudo mkdir -p /host/run/dbus/system_bus_socket && chmod -R 0777 /host/run/dbus/system_bus_socket && \
     sudo ln -s ${INST_SCRIPTS}/docker-entrypoint2.sh /usr/local/docker-entrypoint2.sh && \
@@ -357,7 +362,7 @@ RUN sudo wget -c ${ECLIPSE_DOWNLOAD_URL}/${ECLIPSE_TAR} && \
 #		-installIU net.sourceforge.vrapper.eclipse.jdt.feature.feature.group \
 #		-installIU net.sourceforge.vrapper.plugin.surround.feature.group
 
-RUN sudo apt-get install -y libwebkitgtk-3.0-0
+RUN sudo apt-get update -y && sudo apt-get install -y libwebkitgtk-3.0-0
 
 ##################################
 #### Set up user environments ####
