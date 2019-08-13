@@ -29,5 +29,5 @@ echo "---------------------------------------------"
 echo "---- shell into the Container for ${imageTag}"
 echo "---------------------------------------------"
 
-sudo docker exec -it $(sudo docker ps -a |grep ${instanceName} |awk '{print $1;}') /bin/bash
+docker exec -it $(docker ps -a |grep ${instanceName} |awk '{print $1;}') /bin/bash
 
