@@ -202,8 +202,11 @@ Run the NodeJS mini-server script:
 ```
 Then, open web browser to go to http://0.0.0.0:3000/ to NodeJS mini-web server test.
 
-#
-
+# Display X11 Issue
+More resource in X11 display of Eclipse on your host machine's OS, please see
+* [X11 Display problem](https://askubuntu.com/questions/871092/failed-to-connect-to-mir-failed-to-connect-to-server-socket-no-such-file-or-di)
+* [X11 Display with Xhost](http://www.ethicalhackx.com/fix-gtk-warning-cannot-open-display/)
+ 
 # To run specialty Java/Scala IDE alternatives
 However, for larger complex projects, you might want to consider to use Docker-based IDE. 
 For example, try the following Docker-based IDEs:
