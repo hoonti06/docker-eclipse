@@ -1,7 +1,6 @@
-# OpenJDK Java 8 (1.8.0_222) JDK + Maven 3.6 + Python 3.6/2.7 + node 11 + npm 6 + Gradle 5.5
-
-# ** UPDATE **
-Use OpenJDK from now on!!
+# NOTE1 : Forked from https://github.com/DrSnowbird/jdk-mvn-py3 and Customized
+ 
+# OpenJDK Java 8 (1.8.0_222) JDK + Maven 3.6 + node 11 + npm 6 + Gradle 5.5
 
 # NOTICE: ''Change to use Non-Root implementation''
 This new release is designed to support the deployment for Non-Root child images implementations and deployments to platform such as OpenShift or RedHat host operating system which requiring special policy to deploy. And, for better security practice, we decided to migrate (eventaully) our Docker containers to use Non-Root implementation. 
@@ -24,13 +23,15 @@ After that, combining with other Docker security practice (see below references)
 * [Five Docker Security Best Practices - The New Stack](https://thenewstack.io/5-docker-security-best-practices/)
 
 # Components:
-* openjdk version "1.8.0_222"
+* Eclipse `2019-06` JEE version (you can change in Dockerfile)
+* openjdk version `1.8.0_222``
   OpenJDK Runtime Environment (build 1.8.0_222-8u222-b10-1ubuntu1~18.04.1-b10)
   OpenJDK 64-Bit Server VM (build 25.222-b10, mixed mode)
-* Apache Maven 3.6
-* Node v11.15.0 + npm 6.7.0 (from NodeSource official Node Distribution)
-* Gradle 5.5
-* Other tools: git wget unzip vim python python-setuptools python-dev python-numpy, ..., etc.
+* Apache Maven `3.6`
+* Node `v11.15.0` + npm `6.7.0` (from NodeSource official Node Distribution)
+* Gradle `5.5`
+* X11 display desktop
+* Other tools: git wget unzip, ..., etc.
 
 # Quick commands
 * build.sh - build local image
@@ -38,22 +39,22 @@ After that, combining with other Docker security practice (see below references)
 * run.sh - run the container
 * shell.sh - shell into the container
 * stop.sh - stop the container
-* tryJava.sh : test Java
-* tryNodeJS.sh : test NodeJS
-* tryPython.sh : test Python
-* tryWebSocketServer.sh : test WebSockert NodeJS Server
+* test/tryJava.sh : test Java
+* test/tryNodeJS.sh : test NodeJS
+* test/tryWebSocketServer.sh : test WebSockert NodeJS Server
 
 # How to use and quick start running?
-1. git clone https://github.com/DrSnowbird/jdk-mvn-py3.git
-2. cd jdk-mvn-py3
-3. ./run.sh
+1. $ docker pull hoonti06/docker-eclipse-min
+2. $ git clone https://github.com/hoonti06/docker-eclipse-min
+3. $ cd docker-eclipse-min
+4. $ ./run.sh
 
 # Default Run (test) - Just entering Container
 ```
 ./run.sh
 ```
 
-# Test Java, NodeJS, and Python3 Runs
+# Test Run Java and NodeJS 
 ```
 ./tryJava.sh
 ./tryNodeJS.sh
@@ -61,19 +62,78 @@ After that, combining with other Docker security practice (see below references)
 ./tryWebSockerServer.sh
 ```
 # Default Build (locally)
+You can build your own image locally.
+Note that the default build docker is "2019-06" version. 
+If you want to build older Eclipse like "photon", you can following instruction in next section
 ```
 ./build.sh
 ```
-# Pull the image from Docker Repository
 
-```bash
-docker pull openkbs/jdk-mvn-py3
+# Build (Older Eclipse version, e.g. Photon)
+Two ways (at least) to build:
+### Way-1 (**Recommended**):
+If you use command line "'**./build.sh**'", you can modify "'**./.env**' (old filename ./docker.env)" file and then, run "./build.sh" to build image
 ```
+## -- Eclipse versions: 2019-06, photon, oxygen, etc.: -- ##
+ECLIPSE_VERSION=2019-06
+or
+ECLIPSE_VERSION=photon
+```
+Then, 
+```
+./build.sh
+```
+### Way-2: 
+Modify the line in '**./Dockefile**' as below if you use '**docker-compose**' or Openshift CI/CD. That is, you are not using command line '**./build.sh**' to build container image.
+```
+## -- Eclipse versions: 2019-06, photon, oxygen, etc.: -- ##
+ENV ECLIPSE_VERSION=${ECLIPSE_VERSION:-2019-06}
+or
+ENV ECLIPSE_VERSION=${ECLIPSE_VERSION:-photon}
+```
+Then, 
+```
+docker-compose up -d 
+```
+# Configurations (Optional)
+If you run "./run.sh" instead of "docker-compose up", you don't have to do anything as below.
+
+* In `run.sh`  
+	* `BASE_DATA_DIR` : `$HOME/data-docker`  
+	* `PACKAGE` : `${imageTag##*/}` (docker-eclipse)  
+	* `LOCAL_VOLUME_DIR` : `${BASE_DATA_DIR}`/`${PACKAGE}` ($HOME/data-docker/docker-eclipse)  
+
+	You can put your 'java projects' in `LOCAL_VOLUME_DIR`. Of course, you can change `LOCAL_VOLUME_DIR`  
+* The script "./run.sh" will re-use or create the local directory in your $HOME directory with the path below to map into the docker's internal `/eclipse-workspace`(default) and `/.eclipse` directory.  
+
+	* The below configurations will ensure all `your projects` created in the container's `/eclipse-workspace` being "persistent" in your local directory, "$HOME/data-docker/eclipse-docker/eclipse-workspace", for your repetitive restart docker container.  
+      ```
+      $HOME/data-docker/eclipse-docker/eclipse-workspace
+      ```
+
+	* The below configuration will ensure all `your eclipse configuration(theme, plugin, etc)` created in the container's `/.eclipse` being "persistent" in your local directory, "$HOME/data-docker/eclipse-docker/.eclipse", for your repetitive restart docker container.
+      ```
+      $HOME/data-docker/eclipse-docker/.eclipse
+      ```
+
+
+### Create Customized Volume Mapping for "docker-compose"
+You can create your own customzied host file mapping, e.g.
+```
+mkdir -p <my_host_directory>/eclipse-workspace
+mkdir -p <my_host_directory>/.eclipse 
+```
+Then, run docker-comp
+```
+docker-compose up -d
+```
+# Distributed Storage
+This project provides simple host volumes. For using more advanced storage solutions, there are a few distributed cluster storage options available, e.g., Lustre (popular in HPC), GlusterFS, Ceph, etc.
 
 # Base the image to build add-on components
 
 ```Dockerfile
-FROM openkbs/jdk-mvn-py3
+FROM hoonti06/docker-eclipse-min
 ... (then your customization Dockerfile code here)
 ```
 
@@ -84,56 +144,27 @@ Then, you're ready to run:
 
 ```bash
 mkdir ./data
-docker run -d --name my-jdk-mvn-py3 -v $PWD/data:/data -i -t openkbs/jdk-mvn-py3
+docker run -d --name my-docker-eclipse-min -v $PWD/data:/data -i -t hoonti06/docker-eclipse-min
 ```
 
 # Build and Run your own image
-Say, you will build the image "my/jdk-mvn-py3".
-
+Say, you will build the image "my/docker-elcipse-min".
+#
 ```bash
-docker build -t my/jdk-mvn-py3 .
+docker build -t my/docker-eclipse-min .
 ```
 
-To run your own image, say, with some-jdk-mvn-py3:
+To run your own image, say, with dockerEclipseMin
 
 ```bash
 mkdir ./data
-docker run -d --name some-jdk-mvn-py3 -v $PWD/data:/data -i -t my/jdk-mvn-py3
+docker run -d --name dockerEclipseMin -v $PWD/data:/data -i -t my/docker-eclipse-min
 ```
 
 # Shell into the Docker instance
 
 ```bash
-docker exec -it some-jdk-mvn-py3 /bin/bash
-```
-
-# Run Python code
-
-To run Python code 
-
-```bash
-docker run -it --rm openkbs/jdk-mvn-py3 python3 -c 'print("Hello World")'
-```
-
-or,
-
-```bash
-docker run -i --rm openkbs/jdk-mvn-py3 python3 < myPyScript.py 
-```
-
-or,
-
-```bash
-mkdir ./data
-echo "print('Hello World')" > ./data/myPyScript.py
-docker run -it --rm --name some-jdk-mvn-py3 -v "$PWD"/data:/data openkbs/jdk-mvn-py3 python3 myPyScript.py
-```
-
-or,
-
-```bash
-alias dpy3='docker run --rm openkbs/jdk-mvn-py3 python3'
-dpy3 -c 'print("Hello World")'
+docker exec -it dockerEclipseMin /bin/bash
 ```
 
 # Compile or Run java -- while no local installation needed
@@ -152,8 +183,8 @@ public class HelloWorld {
 }
 EOF
 cat ./data/HelloWorld.java
-alias djavac='docker run -it --rm --name some-jdk-mvn-py3 -v '$PWD'/data:/data openkbs/jdk-mvn-py3 javac'
-alias djava='docker run -it --rm --name some-jdk-mvn-py3 -v '$PWD'/data:/data openkbs/jdk-mvn-py3 java'
+alias djavac='docker run -it --rm --name dockerEclipseMin -v '$PWD'/data:/data hoonti06/docker-eclipse-min javac'
+alias djava='docker run -it --rm --name dockerEclipseMin -v '$PWD'/data:/data hoonti06/docker-eclipse-min java'
 djavac HelloWorld.java
 djava HelloWorld
 ```
@@ -171,32 +202,12 @@ Run the NodeJS mini-server script:
 ```
 Then, open web browser to go to http://0.0.0.0:3000/ to NodeJS mini-web server test.
 
-# Python Virtual Environments
-There are various ways to run Python virtual envrionments, for example,
-
-### Setup virtualenvwrapper in $HOME/.bashrc profile
-Add the following code to the end of ~/.bashrc
-```
-#########################################################################
-#### ---- Customization for multiple virtual python environment ---- ####
-#########################################################################
-export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
-source /usr/local/bin/virtualenvwrapper.sh
-export WORKON_HOME=~/Envs
-if [ ! -d $WORKON_HOME ]; then
-    mkdir -p $WORKON_HOME
-fi
-```
-
-### To create & activate your default venv environment, say, "my-venv":
-```
-mkvirtualenv my-venv
-workon my-venv
-```
+#
 
 # To run specialty Java/Scala IDE alternatives
 However, for larger complex projects, you might want to consider to use Docker-based IDE. 
 For example, try the following Docker-based IDEs:
+* [hoonti06/docker-eclipse](https://hub.docker.com/r/hoonti06/docker-eclipse)
 * [openkbs/docker-atom-editor](https://hub.docker.com/r/openkbs/docker-atom-editor/)
 * [openkbs/eclipse-photon-docker](https://hub.docker.com/r/openkbs/eclipse-photon-docker/)
 * [openkbs/eclipse-photon-vnc-docker](https://hub.docker.com/r/openkbs/eclipse-photon-vnc-docker/)
@@ -234,63 +245,5 @@ If you want to map to different directory for certificates, e.g., /home/develope
 3. And, inside the Docker startup script to invoke the `~/scripts/setup_system_certificates.sh`. Note that the script assumes the certficates are in `/certificates` directory.
 4. The script `~/scripts/setup_system_certificates.sh` will automatic copy to target directory and setup certificates for both System commands (wget, curl, etc) to use and Web Browsers'.
 
-# Releases information
-```
-developer@6f703b01d812:~$ /usr/scripts/printVersions.sh 
-JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-openjdk version "1.8.0_222"
-OpenJDK Runtime Environment (build 1.8.0_222-8u222-b10-1ubuntu1~18.04.1-b10)
-OpenJDK 64-Bit Server VM (build 25.222-b10, mixed mode)
-Apache Maven 3.6.1 (d66c9c0b3152b2e69ee9bac180bb8fcc8e6af555; 2019-04-04T19:00:29Z)
-Maven home: /usr/apache-maven-3.6.1
-Java version: 1.8.0_222, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
-Default locale: en, platform encoding: UTF-8
-OS name: "linux", version: "5.0.0-23-generic", arch: "amd64", family: "unix"
-Python 2.7.15rc1
-Python 3.6.7
-pip 19.2.1 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
-pip 19.2.1 from /usr/local/lib/python3.6/dist-packages/pip (python 3.6)
-
-Welcome to Gradle 5.5.1!
-
-Here are the highlights of this release:
- - Kickstart Gradle plugin development with gradle init
- - Distribute organization-wide Gradle properties in custom Gradle distributions
- - Transform dependency artifacts on resolution
-
-For more details see https://docs.gradle.org/5.5.1/release-notes.html
-
-
-------------------------------------------------------------
-Gradle 5.5.1
-------------------------------------------------------------
-
-Build time:   2019-07-10 20:38:12 UTC
-Revision:     3245f748c7061472da4dc184991919810f7935a5
-
-Kotlin:       1.3.31
-Groovy:       2.5.4
-Ant:          Apache Ant(TM) version 1.9.14 compiled on March 12 2019
-JVM:          1.8.0_222 (Private Build 25.222-b10)
-OS:           Linux 5.0.0-23-generic amd64
-
-6.7.0
-v11.15.0
-DISTRIB_ID=Ubuntu
-DISTRIB_RELEASE=18.04
-DISTRIB_CODENAME=bionic
-DISTRIB_DESCRIPTION="Ubuntu 18.04.2 LTS"
-NAME="Ubuntu"
-VERSION="18.04.2 LTS (Bionic Beaver)"
-ID=ubuntu
-ID_LIKE=debian
-PRETTY_NAME="Ubuntu 18.04.2 LTS"
-VERSION_ID="18.04"
-HOME_URL="https://www.ubuntu.com/"
-SUPPORT_URL="https://help.ubuntu.com/"
-BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
-PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
-VERSION_CODENAME=bionic
-UBUNTU_CODENAME=bionic
-```
+# [Releases information](https://github.com/hoonti06/docker-eclipse-min/release-info.md)
 
