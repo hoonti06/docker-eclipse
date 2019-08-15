@@ -124,26 +124,13 @@ For example, try the following Docker-based IDEs:
 * [openkbs/webstorm-docker](https://hub.docker.com/r/openkbs/webstorm-docker/)
 * [openkbs/webstorm-vnc-docker](https://hub.docker.com/r/openkbs/webstorm-vnc-docker/)
 
-# See also
-* [Java Development in Docker](https://blog.giantswarm.io/getting-started-with-java-development-on-docker/)
-* [Alpine small image JDKs](https://github.com/frol/docker-alpine-oraclejdk8)
-* [NPM Prefix for not using SUDO NPM](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally)
-
-# Proxy & Certificate Setup
-* [Setup System and Browsers Root Certificate](https://thomas-leister.de/en/how-to-import-ca-root-certificate/)
-
-# Corporate Proxy Root and Intemediate Certificates setup for System and Web Browsers (FireFox, Chrome, etc)
-1. Save your corporate's Certificates in the currnet GIT directory, `./certificates`
-2. During Docker run command, 
-```
-   -v `pwd`/certificates:/certificates ... (the rest parameters)
-```
-If you want to map to different directory for certificates, e.g., /home/developer/certificates, then
-```
-   -v `pwd`/certificates:/home/developer/certificates -e SOURCE_CERTIFICATES_DIR=/home/developer/certificates ... (the rest parameters)
-```
-3. And, inside the Docker startup script to invoke the `~/scripts/setup_system_certificates.sh`. Note that the script assumes the certficates are in `/certificates` directory.
-4. The script `~/scripts/setup_system_certificates.sh` will automatic copy to target directory and setup certificates for both System commands (wget, curl, etc) to use and Web Browsers'.
-
+# Display X11 Issue
+More resource in X11 display of Eclipse on your host machine's OS, please see
+* [X11 Display problem](https://askubuntu.com/questions/871092/failed-to-connect-to-mir-failed-to-connect-to-server-socket-no-such-file-or-di)
+* [X11 Display with Xhost](http://www.ethicalhackx.com/fix-gtk-warning-cannot-open-display/)
+ 
 # Other possible Issues
 You might see the warning message in the launching xterm console like below, you can just ignore it. I googles around and some blogs just suggested to ignore since the IDE still functional ok.
+```
+** (eclipse:1): WARNING **: Couldn't connect to accessibility bus: Failed to connect to socket /tmp/dbus-wrKH8o5rny: Connection refused
+** (java:7): WARNING **: Couldn't connect to accessibility bus: Failed to connect to socket /tmp/dbus-wrKH8o5rny: Connection refused
