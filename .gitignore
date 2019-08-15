@@ -1,0 +1,13 @@
+eclipse*
+!*workspace/dummy.txt
+.meta*
+*.swp
+*.class
+*.log
+*.tgz
+*.zip
+*.deb
+*.tar.gz
+*.swp
+*.save
+fuse*
