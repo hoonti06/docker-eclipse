@@ -1,8 +1,5 @@
 # OpenJDK Java 8 (1.8.0_222) JDK + Maven 3.6 + Python 3.6/2.7 + node 11 + npm 6 + Gradle 5.5
 
-# ** UPDATE **
-Use OpenJDK from now on!!
-
 # NOTICE: ''Change to use Non-Root implementation''
 This new release is designed to support the deployment for Non-Root child images implementations and deployments to platform such as OpenShift or RedHat host operating system which requiring special policy to deploy. And, for better security practice, we decided to migrate (eventaully) our Docker containers to use Non-Root implementation. 
 Here are some of the things you can do if your images requiring "Root" acccess - you `really` want to do it:
@@ -23,6 +20,14 @@ After that, combining with other Docker security practice (see below references)
 * [Docker Security - 6 Ways to Secure Your Docker Containers](https://www.sumologic.com/blog/security/securing-docker-containers/)
 * [Five Docker Security Best Practices - The New Stack](https://thenewstack.io/5-docker-security-best-practices/)
 
+
+## NOTE1
+* Forked from [DrSnowbird/jdk-mvn-py3](https://github.com/DrSnowbird/jdk-mvn-py3)
+* Copied from [DrSnowbird/jdk-mvn-py3-x11](https://github.com/DrSnowbird/jdk-mvn-py3) and [DrSnowbird/eclipse-photon-docker](https://github.com/DrSnowbird/eclipse-photon-docker), and then, Customized
+
+## NOTE2: This docker default is providing latest Eclipse Version(2019-06) and you can change it to other version
+
+
 # Components:
 * openjdk version "1.8.0_222"
   OpenJDK Runtime Environment (build 1.8.0_222-8u222-b10-1ubuntu1~18.04.1-b10)
@@ -42,39 +47,60 @@ After that, combining with other Docker security practice (see below references)
 * tryNodeJS.sh : test NodeJS
 * tryPython.sh : test Python
 * tryWebSocketServer.sh : test WebSockert NodeJS Server
+ 
+# Pull the image from Docker Repository
 
-# How to use and quick start running?
-1. git clone https://github.com/DrSnowbird/jdk-mvn-py3.git
-2. cd jdk-mvn-py3
-3. ./run.sh
-
-# Default Run (test) - Just entering Container
+```bash
+docker pull hoonti06/docker-eclipse-min
 ```
-./run.sh
+
+# Run (recommended for easy-start eclipse)
+Image is pulling from hoonti06/docker-eclipse
+```
+$ ./run.sh
 ```
 
 # Test Java, NodeJS, and Python3 Runs
 ```
-./tryJava.sh
-./tryNodeJS.sh
-./tryPython.sh
-./tryWebSockerServer.sh
-```
-# Default Build (locally)
-```
-./build.sh
-```
-# Pull the image from Docker Repository
-
-```bash
-docker pull openkbs/jdk-mvn-py3
+$ ./tryJava.sh
+$ ./tryNodeJS.sh
+$ ./tryPython.sh
+$ ./tryWebSockerServer.sh
 ```
 
-# Base the image to build add-on components
+# Build
+You can build your own image locally.
+Note that the default build docker is "2019-06" version. 
+If you want to build older Eclipse like "photon", you can following instruction in next section
+```
+$ ./build.sh
+```
 
-```Dockerfile
-FROM openkbs/jdk-mvn-py3
-... (then your customization Dockerfile code here)
+# Build (Older Eclipse version, e.g. Photon)
+Two ways (at least) to build:
+### Way-1 (**Recommended**):
+If you use command line "'**./build.sh**'", you can modify "'**./.env**' (old filename ./docker.env)" file and then, run "./build.sh" to build image
+```
+## -- Eclipse versions: 2019-06, photon, oxygen, etc.: -- ##
+ECLIPSE_VERSION=2019-06
+or
+ECLIPSE_VERSION=photon
+```
+Then, 
+```
+$ ./build.sh
+```
+### Way-2: 
+Modify the line in '**./Dockefile**' as below if you use '**docker-compose**' or Openshift CI/CD. That is, you are not using command line '**./build.sh**' to build container image.
+```
+## -- Eclipse versions: 2019-06, photon, oxygen, etc.: -- ##
+ENV ECLIPSE_VERSION=${ECLIPSE_VERSION:-2019-06}
+or
+ENV ECLIPSE_VERSION=${ECLIPSE_VERSION:-photon}
+```
+Then, 
+```
+$ docker-compose up -d 
 ```
 
 # Manually setup to Run the image
@@ -105,35 +131,6 @@ docker run -d --name some-jdk-mvn-py3 -v $PWD/data:/data -i -t my/jdk-mvn-py3
 
 ```bash
 docker exec -it some-jdk-mvn-py3 /bin/bash
-```
-
-# Run Python code
-
-To run Python code 
-
-```bash
-docker run -it --rm openkbs/jdk-mvn-py3 python3 -c 'print("Hello World")'
-```
-
-or,
-
-```bash
-docker run -i --rm openkbs/jdk-mvn-py3 python3 < myPyScript.py 
-```
-
-or,
-
-```bash
-mkdir ./data
-echo "print('Hello World')" > ./data/myPyScript.py
-docker run -it --rm --name some-jdk-mvn-py3 -v "$PWD"/data:/data openkbs/jdk-mvn-py3 python3 myPyScript.py
-```
-
-or,
-
-```bash
-alias dpy3='docker run --rm openkbs/jdk-mvn-py3 python3'
-dpy3 -c 'print("Hello World")'
 ```
 
 # Compile or Run java -- while no local installation needed
@@ -193,6 +190,7 @@ fi
 mkvirtualenv my-venv
 workon my-venv
 ```
+#
 
 # To run specialty Java/Scala IDE alternatives
 However, for larger complex projects, you might want to consider to use Docker-based IDE. 
