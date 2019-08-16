@@ -18,7 +18,7 @@
  
 # Pull the image from Docker Repository
 ```
-$ docker pull hoonti06/docker-eclipse-min
+$ docker pull hoonti06/docker-eclipse
 ```
 
 # Run (recommended for easy-run eclipse)
@@ -107,7 +107,7 @@ This project provides simple host volumes. For using more advanced storage solut
 # To run specialty Java/Scala IDE alternatives
 However, for larger complex projects, you might want to consider to use Docker-based IDE. 
 For example, try the following Docker-based IDEs:
-* [hoonti06/docker-eclipse](https://hub.docker.com/r/hoonti06/docker-eclipse)
+* [hoonti06/docker-intellij](https://hub.docker.com/r/hoonti06/docker-intellij)
 * [openkbs/docker-atom-editor](https://hub.docker.com/r/openkbs/docker-atom-editor/)
 * [openkbs/eclipse-photon-docker](https://hub.docker.com/r/openkbs/eclipse-photon-docker/)
 * [openkbs/eclipse-photon-vnc-docker](https://hub.docker.com/r/openkbs/eclipse-photon-vnc-docker/)
