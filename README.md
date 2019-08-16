@@ -76,14 +76,14 @@ if you run "docker-compose up" or customize your project (not just run "./run.sh
 	You can put your **java projects** in `LOCAL_VOLUME_DIR`. Of course, you can change `LOCAL_VOLUME_DIR`  
 * The script "./run.sh" will re-use or create the local directory in your $HOME directory with the path below to map into the docker's internal `/eclipse-workspace`(default) and `/.eclipse` directory.  
 
-	* The below configurations will ensure **all your projects** created in the container's **/eclipse-workspace** being "persistent" in your local directory, "$HOME/data-docker/eclipse-docker/eclipse-workspace", for your repetitive restart docker container.  
+	* The below configurations will ensure **all your projects** created in the container's **/eclipse-workspace** being "persistent" in your local directory, "$HOME/data-docker/docker-eclipse/eclipse-workspace", for your repetitive restart docker container.  
       ```
-      $HOME/data-docker/eclipse-docker/eclipse-workspace
+      $HOME/data-docker/docker-eclipse/eclipse-workspace
       ```
 
-	* The below configuration will ensure **all your eclipse configuration(theme, plugin, etc)** created in the container's **/.eclipse** being "persistent" in your local directory, "$HOME/data-docker/eclipse-docker/.eclipse", for your repetitive restart docker container.
+	* The below configuration will ensure **all your eclipse configuration(theme, plugin, etc)** created in the container's **/.eclipse** being "persistent" in your local directory, "$HOME/data-docker/docker-eclipse/.eclipse", for your repetitive restart docker container.
       ```
-      $HOME/data-docker/eclipse-docker/.eclipse
+      $HOME/data-docker/docker-eclipse/.eclipse
       ```
 	* `#VOLUMES_LIST` in **.env** is used to make var `VOLUME_MAP` in **run.sh** **_(NOT to be used in 'build.sh', put '#' before 'VOLUMES_LIST')_**
 
