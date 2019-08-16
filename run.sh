@@ -21,39 +21,7 @@ BASE_DATA_DIR="$HOME/data-docker"
 MY_IP=`ip route get 1|awk '{print$NF;exit;}'`
 DOCKER_IMAGE_REPO=`echo $(basename $PWD)|tr '[:upper:]' '[:lower:]'|tr "/: " "_" `
 imageTag="${ORGANIZATION}/${DOCKER_IMAGE_REPO}"
-#PACKAGE=`echo ${imageTag##*/}|tr "/\-: " "_"`
 PACKAGE="${imageTag##*/}"
-
-###################################################
-#### ---- (DEPRECATED but still supported)    -----
-#### ---- Volumes to be mapped (change this!) -----
-###################################################
-# (examples)
-# IDEA_PRODUCT_NAME="IdeaIC2017"
-# IDEA_PRODUCT_VERSION="3"
-# IDEA_INSTALL_DIR="${IDEA_PRODUCT_NAME}.${IDEA_PRODUCT_VERSION}"
-# IDEA_CONFIG_DIR=".${IDEA_PRODUCT_NAME}.${IDEA_PRODUCT_VERSION}"
-# IDEA_PROJECT_DIR="IdeaProjects"
-# VOLUMES_LIST="${IDEA_CONFIG_DIR} ${IDEA_PROJECT_DIR}"
-
-# ---------------------------
-# Variable: VOLUMES_LIST
-# (NEW: use docker.env with "#VOLUMES_LIST=data workspace" to define entries)
-# ---------------------------
-## -- If you defined locally here, 
-##    then the definitions of volumes map in "docker.env" will be ignored.
-# VOLUMES_LIST="data workspace"
-
-# ---------------------------
-# OPTIONAL Variable: PORT PAIR
-# (NEW: use docker.env with "#PORTS=18000:8000 17200:7200" to define entries)
-# ---------------------------
-## -- If you defined locally here, 
-##    then the definitions of ports map in "docker.env" will be ignored.
-#### Input: PORT - list of PORT to be mapped
-# (examples)
-#PORTS_LIST="18000:8000"
-#PORTS_LIST=
 
 #########################################################################################################
 ######################## DON'T CHANGE LINES STARTING BELOW (unless you need to) #########################
