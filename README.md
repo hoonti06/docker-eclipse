@@ -1,5 +1,3 @@
-# docker-eclipse
-
 # Forked from [DrSnowbird/eclipse-photon-docker](https://github.com/DrSnowbird/eclipse-photon-docker) and then, customized
 
 # [hoonti06/docker-jdk-x11](https://github.com/hoonti06/docker-jdk-x11) + eclipse (2019-06)
