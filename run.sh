@@ -225,6 +225,7 @@ docker run -it \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     --user $(id -u $USER) \
+	--network host \
     ${VOLUME_MAP} \
     ${PORT_MAP} \
     ${imageTag} $*
