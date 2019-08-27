@@ -12,8 +12,7 @@ fi
 ###################################################
 #### ---- Change this only to use your own ----
 ###################################################
-ORGANIZATION=openkbs
-baseDataFolder="$HOME/data-docker"
+ORGANIZATION=hoonti06
 
 ###################################################
 #### **** Container package information ****
