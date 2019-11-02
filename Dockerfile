@@ -11,7 +11,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ## -------------------------------------------------------------------------------
 ENV USER=${USER:-developer}
 ENV HOME=/home/${USER}
-ENV ECLIPSE_WORKSPACE=${HOME}/eclipse-workspace
+ENV ECLIPSE_WORKSPACE=${HOME}/workspace
 
 ## ----------------------------------------------------------------------------
 ## ---- To change to different Eclipse version: e.g., oxygen, change here! ----

@@ -116,6 +116,10 @@ function generateVolumeMapping() {
             ls -al ${LOCAL_VOLUME_DIR}/$vol
         fi
     done
+	VOLUME_MAP="${VOLUME_MAP} -v ${BASE_DATA_DIR}/workspace:${DOCKER_VOLUME_DIR}/workspace"
+	VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/.metadata:${DOCKER_VOLUME_DIR}/workspace/.metadata"
+	VOLUME_MAP="${VOLUME_MAP} -v ${BASE_DATA_DIR}/.m2:${DOCKER_VOLUME_DIR}/.m2"
+	VOLUME_MAP="${VOLUME_MAP} -v ${BASE_DATA_DIR}/.gradle:${DOCKER_VOLUME_DIR}/.gradle"
 }
 #### ---- Generate Volumes Mapping ----
 generateVolumeMapping
